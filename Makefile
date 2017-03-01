@@ -4,8 +4,9 @@ CFLAGS_orig = -O0
 CFLAGS_opt  = -O0
 CFLAGS_hash = -O0
 CFLAGS_bst = -O0
+CFLAGS_bigNode_bst = -O0
 
-EXEC = phonebook_orig phonebook_opt phonebook_hash phonebook_bst
+EXEC = phonebook_orig phonebook_opt phonebook_hash phonebook_bst phonebook_bigNode_bst
 
 GIT_HOOKS := .git/hooks/pre-commit
 .PHONY: all
@@ -37,6 +38,11 @@ phonebook_bst: $(SRCS_common) phonebook_bst.c phonebook_bst.h
 		-DIMPL="\"$@.h\"" -o $@ \
 		$(SRCS_common) $@.c
 
+phonebook_bigNode_bst: $(SRCS_common) phonebook_bigNode_bst.c phonebook_bigNode_bst.h
+	$(CC) $(CFLAGS_common) $(CFLAGS_bigNode_bst) \
+		-DIMPL="\"$@.h\"" -o $@ \
+		$(SRCS_common) $@.c
+
 run: $(EXEC)
 	echo 3 | sudo tee /proc/sys/vm/drop_caches
 	watch -d -t "./phonebook_orig && echo 3 | sudo tee /proc/sys/vm/drop_caches"
@@ -54,6 +60,9 @@ cache-test: $(EXEC)
 	perf stat --repeat 100 \
 		-e cache-misses,cache-references,instructions,cycles \
 		./phonebook_bst
+	perf stat --repeat 100 \
+		-e cache-misses,cache-references,instructions,cycles \
+		./phonebook_bigNode_bst
 
 output.txt: cache-test calculate
 	./calculate
@@ -67,4 +76,4 @@ calculate: calculate.c
 .PHONY: clean
 clean:
 	$(RM) $(EXEC) *.o perf.* \
-		calculate orig.txt opt.txt hash.txt bst.txt output.txt runtime.png
+		calculate orig.txt opt.txt hash.txt bst.txt bigNode_bst.txt output.txt runtime.png

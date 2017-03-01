@@ -10,6 +10,8 @@
 #define OUT_FILE "opt.txt"
 #elif HASH
 #define OUT_FILE "hash.txt"
+#elif BIGNODE_BST
+#define OUT_FILE "bigNode_bst.txt"
 #elif BST
 #define OUT_FILE "bst.txt"
 #else
@@ -103,7 +105,11 @@ int main(int argc, char *argv[])
     /* the givn last name to find */
     char input[MAX_LAST_NAME_SIZE] = "zyxel";
 
-#if defined(BST)
+#if defined(BIGNODE_BST)
+    assert(findName(input, root) &&
+           "Did you implement findName() in " IMPL "?");
+    assert(0 == strcmp(findName(input, root)->lastName, "zyxel"));
+#elif defined(BST)
     assert(findName(input, root) &&
            "Did you implement findName() in " IMPL "?");
     assert(0 == strcmp(findName(input, root)->pEntry->lastName, "zyxel"));
