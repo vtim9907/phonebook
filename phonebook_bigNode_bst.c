@@ -5,7 +5,7 @@
 
 #include "phonebook_bigNode_bst.h"
 
-entry *findName (char lastName[], bst *root)
+entry *findName(char lastName[], bst *root)
 {
     int count;
     bst *result = findnode(lastName, root);
@@ -19,22 +19,20 @@ entry *findName (char lastName[], bst *root)
     return NULL;
 }
 
-bst *findnode (char lastName[], bst *root)
+bst *findnode(char lastName[], bst *root)
 {
-    int val, count;
-    bst *tmp = root;
-    while (tmp) {
-        count = -1;
-        while (++count < ENTRY_NUM) {
-            if (tmp->pEntry[count]) {
-                if ((val = strcasecmp(lastName, tmp->pEntry[count]->lastName)) == 0)
-                    return tmp;
+    while (root) {
+        int val, node_num = ENTRY_NUM;
+        do {
+            if (root->pEntry[node_num--]) {
+                if (!(val = strcasecmp(lastName, root->pEntry[node_num]->lastName)))
+                    return root;
             }
-        }
+        } while (node_num);
         if (val < 0)
-            tmp = tmp->left;
+            root = root->left;
         else
-            tmp = tmp->right;
+            root = root->right;
     }
     return NULL;
 }
@@ -49,7 +47,7 @@ entry *append(char lastName[], entry *e)
     return e;
 }
 
-bst *build_bst (entry *e)
+bst *build_bst(entry *e)
 {
     int countLength = 0;
     entry *tmp = e;
@@ -62,7 +60,7 @@ bst *build_bst (entry *e)
     return build(&e, countLength / 6);
 }
 
-bst *build (entry **e, int length)
+bst *build(entry **e, int length)
 {
     int count = -1;
     if (length <= 0)
